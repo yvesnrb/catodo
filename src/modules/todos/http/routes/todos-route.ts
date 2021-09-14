@@ -20,4 +20,9 @@ todosRouter.post(
   todosController.create.bind(todosController),
 );
 
+todosRouter.put(
+  '/:id',
+  todosController.update.bind(todosController),
+);
+
 export default todosRouter;
