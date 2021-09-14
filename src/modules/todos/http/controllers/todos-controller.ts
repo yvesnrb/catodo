@@ -3,12 +3,16 @@ import { getConnection } from 'typeorm';
 
 import CreateTodoService from '@services/create-todo-service';
 import ListTodosService from '@services/list-todos-service';
+import UpdateTodoService from '@services/update-todo-service';
 import Todo from '@entities/todo-entity';
+import AppError from '@/errors/app-error';
 
 export default class TodosController {
+  private listTodos: ListTodosService;
+
   private createTodo: CreateTodoService;
 
-  private listTodos: ListTodosService;
+  private updateTodo: UpdateTodoService;
 
   constructor() {
     this.createTodo = new CreateTodoService(
@@ -16,6 +20,10 @@ export default class TodosController {
     );
 
     this.listTodos = new ListTodosService(
+      getConnection().getMongoRepository(Todo),
+    );
+
+    this.updateTodo = new UpdateTodoService(
       getConnection().getMongoRepository(Todo),
     );
   }
@@ -32,6 +40,19 @@ export default class TodosController {
   public async create(request: Request, response: Response): Promise<void> {
     const { body } = request.body;
     const todo = await this.createTodo.execute({ body });
+
+    response.json(todo);
+  }
+
+  public async update(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+    const { body, isComplete } = request.body;
+
+    const todo = await this.updateTodo.execute({
+      id,
+      body,
+      isComplete,
+    });
 
     response.json(todo);
   }
