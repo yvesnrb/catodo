@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import 'dotenv/config';
+import 'reflect-metadata';
 import database from '@/db';
 
 database.then(() => {
