@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "allowJs": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"],
+      "@config/*": ["config/*"],
+      "@errors/*": ["errors/*"],
+      "@http/*": [
+        "modules/shared/http/*",
+        "modules/todos/http/*"
+      ],
+      "@dtos/*": [
+        "modules/shared/dtos/*",
+        "modules/todos/dtos/*"
+      ],
+      "@entities/*": [
+        "modules/shared/entities/*",
+        "modules/todos/entities/*"
+      ],
+      "@repositories/*": [
+        "modules/shared/repositories/*",
+        "modules/todos/repositories/*"
+      ],
+      "@services/*": [
+        "modules/shared/services/*",
+        "modules/todos/services/*"
+      ]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"]
+}
