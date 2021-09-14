@@ -20,7 +20,10 @@ tested with podman/podman-compose.
 To setup the application locally, ensure that you have NojeJS v.14.xx.xx and a
 MongoDB instance. You may then use the template.env file to create your own
 .env file with the necessary information for connecting to the database and
-allocating a TCP port.
+allocating a TCP port. Leave as-is any values you want to use the default of.
+
+Then, simply run `npm install` to install dependencies and `npm run watch` to
+start in dev mode.
 
 # NPM Scripts
 
@@ -39,4 +42,4 @@ The following NPM scripts are available for this application:
 This API is documented using the OpenAPI 3.0.0 spec (formely known as Swagger).
 The documentation is found on the spec.yaml file at the root of the project.
 Alternatively, you can view an interactive rendering of the documentation by
-navigating to http://localhost:3000/documentation from a web browser.
+navigating to http://localhost:5000/documentation from a web browser.
