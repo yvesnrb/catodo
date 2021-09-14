@@ -4,8 +4,8 @@ import { getConnection } from 'typeorm';
 import CreateTodoService from '@services/create-todo-service';
 import ListTodosService from '@services/list-todos-service';
 import UpdateTodoService from '@services/update-todo-service';
+import RemoveTodoService from '@services/remove-todo-service';
 import Todo from '@entities/todo-entity';
-import AppError from '@/errors/app-error';
 
 export default class TodosController {
   private listTodos: ListTodosService;
@@ -13,6 +13,8 @@ export default class TodosController {
   private createTodo: CreateTodoService;
 
   private updateTodo: UpdateTodoService;
+
+  private removeTodo: RemoveTodoService;
 
   constructor() {
     this.createTodo = new CreateTodoService(
@@ -24,6 +26,10 @@ export default class TodosController {
     );
 
     this.updateTodo = new UpdateTodoService(
+      getConnection().getMongoRepository(Todo),
+    );
+
+    this.removeTodo = new RemoveTodoService(
       getConnection().getMongoRepository(Todo),
     );
   }
@@ -55,5 +61,13 @@ export default class TodosController {
     });
 
     response.json(todo);
+  }
+
+  public async remove(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+
+    await this.removeTodo.execute({ id });
+
+    response.status(204).send();
   }
 }
