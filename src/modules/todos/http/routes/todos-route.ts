@@ -4,6 +4,7 @@ import { celebrate, Segments } from 'celebrate';
 import TodosController from '@http/controllers/todos-controller';
 import createTodoRequestSchema from '@http/schemas/create-todo-request-schema';
 import listTodosQuerySchema from '@http/schemas/list-todos-query-schema';
+import updateTodoRequestSchema from '@http/schemas/update-todo-request-schema';
 
 const todosRouter = Router();
 const todosController = new TodosController();
@@ -22,6 +23,7 @@ todosRouter.post(
 
 todosRouter.put(
   '/:id',
+  celebrate({ [Segments.BODY]: updateTodoRequestSchema }),
   todosController.update.bind(todosController),
 );
 
