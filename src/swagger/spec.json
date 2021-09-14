@@ -1,0 +1,492 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Catodo",
+    "description": "A simple TODO API."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/todos": {
+      "get": {
+        "description": "List TODO items.",
+        "tags": [
+          "todos"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page of the list to fetch. Starts at 0.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query successful. Returns a list of TODO items.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "description": "JSON array containing the items in this page.",
+                      "minimum": 0,
+                      "maximum": 10,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "UUID",
+                            "description": "Unique UUID for this TODO.",
+                            "example": "2837ee4a-2635-4cda-aa77-548d1e616092"
+                          },
+                          "body": {
+                            "type": "string",
+                            "description": "Body content of this TODO.",
+                            "example": "Go to the supermarket to buy milk and eggs.",
+                            "minLength": 5,
+                            "maxLength": 150
+                          },
+                          "isComplete": {
+                            "type": "boolean",
+                            "description": "Whether or not this TODO has been marked as complete.",
+                            "example": false,
+                            "default": false
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp for when this item was created.",
+                            "example": "2021-09-13 22:51:00Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp for when this item was last updated.",
+                            "example": "2021-09-13 22:51:00Z"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "body",
+                          "isComplete"
+                        ]
+                      }
+                    },
+                    "page": {
+                      "type": "integer",
+                      "description": "Current page of this listing. Starts at 0.",
+                      "example": 0,
+                      "minimum": 0
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "description": "Total number of pages for this listing.",
+                      "example": 10,
+                      "minimum": 1
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "page",
+                    "totalPages"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error in query parameters."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "post": {
+        "description": "Add a new TODO item.",
+        "tags": [
+          "todos"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "Body content of this TODO.",
+                    "example": "Go to the supermarket to buy milk and eggs.",
+                    "minLength": 5,
+                    "maxLength": 150
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "TODO item successfuly created. Returns the newly created item.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "UUID",
+                      "description": "Unique UUID for this TODO.",
+                      "example": "2837ee4a-2635-4cda-aa77-548d1e616092"
+                    },
+                    "body": {
+                      "type": "string",
+                      "description": "Body content of this TODO.",
+                      "example": "Go to the supermarket to buy milk and eggs.",
+                      "minLength": 5,
+                      "maxLength": 150
+                    },
+                    "isComplete": {
+                      "type": "boolean",
+                      "description": "Whether or not this TODO has been marked as complete.",
+                      "example": false,
+                      "default": false
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp for when this item was created.",
+                      "example": "2021-09-13 22:51:00Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp for when this item was last updated.",
+                      "example": "2021-09-13 22:51:00Z"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "body",
+                    "isComplete"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error in request body."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/todos/{id}": {
+      "put": {
+        "description": "Update an existing TODO item.",
+        "tags": [
+          "todos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "UUID of the TODO item to be updated.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "UUID"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "Current or updated body content of this TODO.",
+                    "example": "Go to the supermarket to buy milk and eggs.",
+                    "minLength": 5,
+                    "maxLength": 150
+                  },
+                  "isComplete": {
+                    "type": "boolean",
+                    "description": "Current or updated isComplete of this TODO.",
+                    "example": false
+                  }
+                },
+                "required": [
+                  "body",
+                  "isComplete"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "TODO successfully updated. Returns the newly updated TODO item.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "UUID",
+                      "description": "Unique UUID for this TODO.",
+                      "example": "2837ee4a-2635-4cda-aa77-548d1e616092"
+                    },
+                    "body": {
+                      "type": "string",
+                      "description": "Body content of this TODO.",
+                      "example": "Go to the supermarket to buy milk and eggs.",
+                      "minLength": 5,
+                      "maxLength": 150
+                    },
+                    "isComplete": {
+                      "type": "boolean",
+                      "description": "Whether or not this TODO has been marked as complete.",
+                      "example": false,
+                      "default": false
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp for when this item was created.",
+                      "example": "2021-09-13 22:51:00Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp for when this item was last updated.",
+                      "example": "2021-09-13 22:51:00Z"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "body",
+                    "isComplete"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error in request body."
+          },
+          "404": {
+            "description": "No TODO item by this UUID found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "delete": {
+        "description": "Remove an existing TODO item.",
+        "tags": [
+          "todos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "UUID of the TODO item to be removed.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Todo successfully removed."
+          },
+          "400": {
+            "description": "Validation error in request body."
+          },
+          "404": {
+            "description": "No TODO item by this ID found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Todo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "UUID",
+            "description": "Unique UUID for this TODO.",
+            "example": "2837ee4a-2635-4cda-aa77-548d1e616092"
+          },
+          "body": {
+            "type": "string",
+            "description": "Body content of this TODO.",
+            "example": "Go to the supermarket to buy milk and eggs.",
+            "minLength": 5,
+            "maxLength": 150
+          },
+          "isComplete": {
+            "type": "boolean",
+            "description": "Whether or not this TODO has been marked as complete.",
+            "example": false,
+            "default": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp for when this item was created.",
+            "example": "2021-09-13 22:51:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp for when this item was last updated.",
+            "example": "2021-09-13 22:51:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "body",
+          "isComplete"
+        ]
+      },
+      "TodoList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "JSON array containing the items in this page.",
+            "minimum": 0,
+            "maximum": 10,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "UUID",
+                  "description": "Unique UUID for this TODO.",
+                  "example": "2837ee4a-2635-4cda-aa77-548d1e616092"
+                },
+                "body": {
+                  "type": "string",
+                  "description": "Body content of this TODO.",
+                  "example": "Go to the supermarket to buy milk and eggs.",
+                  "minLength": 5,
+                  "maxLength": 150
+                },
+                "isComplete": {
+                  "type": "boolean",
+                  "description": "Whether or not this TODO has been marked as complete.",
+                  "example": false,
+                  "default": false
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp for when this item was created.",
+                  "example": "2021-09-13 22:51:00Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp for when this item was last updated.",
+                  "example": "2021-09-13 22:51:00Z"
+                }
+              },
+              "required": [
+                "id",
+                "body",
+                "isComplete"
+              ]
+            }
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page of this listing. Starts at 0.",
+            "example": 0,
+            "minimum": 0
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of pages for this listing.",
+            "example": 10,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "items",
+          "page",
+          "totalPages"
+        ]
+      },
+      "CreateTodoRequest": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Body content of this TODO.",
+            "example": "Go to the supermarket to buy milk and eggs.",
+            "minLength": 5,
+            "maxLength": 150
+          }
+        },
+        "required": [
+          "body"
+        ]
+      },
+      "UpdateTodoRequest": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Current or updated body content of this TODO.",
+            "example": "Go to the supermarket to buy milk and eggs.",
+            "minLength": 5,
+            "maxLength": 150
+          },
+          "isComplete": {
+            "type": "boolean",
+            "description": "Current or updated isComplete of this TODO.",
+            "example": false
+          }
+        },
+        "required": [
+          "body",
+          "isComplete"
+        ]
+      }
+    }
+  }
+}
