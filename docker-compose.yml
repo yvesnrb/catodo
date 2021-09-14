@@ -1,0 +1,16 @@
+version: "3"
+services:
+  catodo_app:
+    container_name: catodo_app
+    restart: always
+    build: .
+    ports:
+      - "5000:5000"
+    links:
+      - catodo_db
+  catodo_db:
+    container_name: catodo_db
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
