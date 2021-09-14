@@ -17,14 +17,14 @@ const mockTodo: Todo = {
 jest.mock('@entities/todo-entity', () =>
   jest.fn().mockImplementation(() => mockTodo));
 
-describe('CreateTodoService', () => {
+describe('ListTodosService', () => {
   beforeEach(() => {
     listTodos = new ListTodosService(
       mockTodosRepository as unknown as MongoRepository<Todo>,
     );
   });
 
-  it('should create a new todo and save it', async () => {
+  it('should generate a list of todos', async () => {
     mockTodosRepository.count.mockReturnValue(Promise.resolve(54));
     mockTodosRepository.find.mockReturnValue(Promise.resolve([mockTodo]));
 
@@ -33,6 +33,11 @@ describe('CreateTodoService', () => {
       items: [mockTodo],
       page: 2,
       totalPages: 6,
+    });
+    expect(mockTodosRepository.count).toHaveBeenCalled();
+    expect(mockTodosRepository.find).toHaveBeenCalledWith({
+      skip: 20,
+      take: 10,
     });
   });
 });
