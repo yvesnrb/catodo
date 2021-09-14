@@ -27,6 +27,8 @@ describe('CreateTodoService', () => {
   it('should create a new todo and save it', async () => {
     mockTodosRepository.save.mockReturnValue(Promise.resolve(mockTodo));
     const todo = await createTodo.execute({ body: 'mock todo body' });
+
     expect(todo).toStrictEqual(mockTodo);
+    expect(mockTodosRepository.save).toHaveBeenCalledWith(mockTodo);
   });
 });
